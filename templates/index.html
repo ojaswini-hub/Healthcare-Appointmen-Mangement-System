@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Appointment Management System</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <header>
+        <h1>Appointment Management System</h1>
+    </header>
+
+    <div class="container">
+
+        <h2>Welcome!</h2>
+
+        <p>Manage your appointments easily and efficiently.</p>
+
+        <div class="card-container">
+
+            <div class="card">
+                <h3>📅 Book Appointment</h3>
+                <p>Schedule a new appointment.</p>
+               <a href="/book">
+                 <button>Book Now</button>
+                </a>
+            </div>
+
+            <div class="card">
+                <h3>📋 My Appointments</h3>
+                <p>View your upcoming appointments.</p>
+               <a href="/appointments">
+    <button>View Appointments</button>
+</a>
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>

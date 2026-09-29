@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Book Appointment</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <header>
+        <h1>Book an Appointment</h1>
+    </header>
+
+    <div class="container">
+
+        <div class="card">
+
+    <h2>Appointment Form</h2>
+
+    {% if success %}
+        <p class="success">{{ success }}</p>
+    {% endif %}
+
+    {% if error %}
+        <p class="error">{{ error }}</p>
+    {% endif %}
+
+    <form method="POST" action="/book">
+
+                <label>Patient Name</label>
+                <br>
+                <input type="text" name="patient_name" placeholder="Enter your name" required>
+                <br><br>
+
+                <label>Email</label>
+                <br>
+                <input type="email" name="email" placeholder="Enter your email" required>
+                <br><br>
+
+                <label>Doctor</label>
+                <br>
+                <select name="doctor" required>
+                    <option>Select Doctor</option>
+                    <option>Dr. Sharma</option>
+                    <option>Dr. Patel</option>
+                    <option>Dr. Mehta</option>
+                </select>
+                <br><br>
+
+                <label>Date</label>
+                <br>
+                <input type="date" name="date" required>
+                <br><br>
+
+                <label>Time</label>
+                <br>
+                <input type="time" name="time" required>
+                <br><br>
+
+                <button type="submit">
+                    Book Appointment
+                </button>
+
+            </form>
+
+            <br>
+
+            <a href="/">← Back to Home</a>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>
