@@ -11,7 +11,6 @@ Project Guide: Prof. Monali Tingane
 Project Team
 
 - Ojaswini Mane
-- Prajwal Managule
 - Yashpali Patade
 - Siddhant Tribhuvan
 
