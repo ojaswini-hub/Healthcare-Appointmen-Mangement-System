@@ -1,69 +1,321 @@
 <!DOCTYPE html>
-<html>
+<html lang="{{ current_language }}">
 
 <head>
-    <title>My Appointments</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+        {% if current_language == 'mr' %}
+            माझ्या अपॉइंटमेंट्स
+        {% elif current_language == 'hi' %}
+            मेरी अपॉइंटमेंट्स
+        {% else %}
+            My Appointments
+        {% endif %}
+    </title>
 
     <link rel="stylesheet"
           href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        .language-selector {
+            text-align: right;
+            margin: 15px 0;
+        }
+
+        .language-selector select {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background: #087f8c;
+            color: white;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin: 20px 0;
+        }
+    </style>
 </head>
 
 <body>
 
-    <header>
-        <h1>My Appointments</h1>
-    </header>
-
     <div class="container">
 
-        <h2>Appointment List</h2>
+        <!-- Language Selector -->
+        <div class="language-selector">
+
+            <label for="language">
+                {% if current_language == 'mr' %}
+                    भाषा निवडा:
+                {% elif current_language == 'hi' %}
+                    भाषा चुनें:
+                {% else %}
+                    Select Language:
+                {% endif %}
+            </label>
+
+            <select id="language" onchange="changeLanguage(this.value)">
+
+                <option value="en"
+                    {% if current_language == 'en' %}selected{% endif %}>
+                    English
+                </option>
+
+                <option value="mr"
+                    {% if current_language == 'mr' %}selected{% endif %}>
+                    मराठी
+                </option>
+
+                <option value="hi"
+                    {% if current_language == 'hi' %}selected{% endif %}>
+                    हिन्दी
+                </option>
+
+            </select>
+        </div>
+
+        <!-- Page Heading -->
+        <header>
+            <h1>
+                {% if current_language == 'mr' %}
+                    माझ्या अपॉइंटमेंट्स
+                {% elif current_language == 'hi' %}
+                    मेरी अपॉइंटमेंट्स
+                {% else %}
+                    My Appointments
+                {% endif %}
+            </h1>
+        </header>
+
+        <h2>
+            {% if current_language == 'mr' %}
+                अपॉइंटमेंट यादी
+            {% elif current_language == 'hi' %}
+                अपॉइंटमेंट सूची
+            {% else %}
+                Appointment List
+            {% endif %}
+        </h2>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="message {{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
 
         {% if appointments %}
 
-        <table>
+        <div class="table-container">
 
-            <tr>
-    <th>Patient</th>
-    <th>Email</th>
-    <th>Doctor</th>
-    <th>Date</th>
-    <th>Time</th>
-    <th>Action</th>
-</tr>
-            {% for appointment in appointments %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>
+                            {% if current_language == 'mr' %}
+                                रुग्ण
+                            {% elif current_language == 'hi' %}
+                                मरीज
+                            {% else %}
+                                Patient
+                            {% endif %}
+                        </th>
 
-          <tr>
+                        <th>
+                            {% if current_language == 'mr' %}
+                                ईमेल
+                            {% elif current_language == 'hi' %}
+                                ईमेल
+                            {% else %}
+                                Email
+                            {% endif %}
+                        </th>
 
-    <td>{{ appointment[1] }}</td>
-    <td>{{ appointment[2] }}</td>
-    <td>{{ appointment[3] }}</td>
-    <td>{{ appointment[4] }}</td>
-    <td>{{ appointment[5] }}</td>
+                        <th>
+                            {% if current_language == 'mr' %}
+                                डॉक्टर
+                            {% elif current_language == 'hi' %}
+                                डॉक्टर
+                            {% else %}
+                                Doctor
+                            {% endif %}
+                        </th>
 
-    <td>
-        <a href="/cancel/{{ appointment[0] }}">
-            <button>Cancel</button>
-        </a>
-    </td>
+                        <th>
+                            {% if current_language == 'mr' %}
+                                तारीख
+                            {% elif current_language == 'hi' %}
+                                तारीख
+                            {% else %}
+                                Date
+                            {% endif %}
+                        </th>
 
-</tr>
+                        <th>
+                            {% if current_language == 'mr' %}
+                                वेळ
+                            {% elif current_language == 'hi' %}
+                                समय
+                            {% else %}
+                                Time
+                            {% endif %}
+                        </th>
 
-            {% endfor %}
+                        <th>
+                            {% if current_language == 'mr' %}
+                                स्थिती
+                            {% elif current_language == 'hi' %}
+                                स्थिति
+                            {% else %}
+                                Status
+                            {% endif %}
+                        </th>
 
-        </table>
+                        <th>
+                            {% if current_language == 'mr' %}
+                                कृती
+                            {% elif current_language == 'hi' %}
+                                कार्रवाई
+                            {% else %}
+                                Action
+                            {% endif %}
+                        </th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for appointment in appointments %}
+
+                    <tr>
+                        <td>{{ appointment[1] }}</td>
+                        <td>{{ appointment[2] }}</td>
+                        <td>{{ appointment[3] }}</td>
+                        <td>{{ appointment[4] }}</td>
+                        <td>{{ appointment[5] }}</td>
+
+                        <!-- Translated Status -->
+                        <td>
+                            {% set status = appointment['status'] or 'Pending' %}
+
+                            {% if current_language == 'mr' %}
+                                {% if status == 'Pending' %}
+                                    प्रलंबित
+                                {% elif status == 'Confirmed' %}
+                                    निश्चित
+                                {% elif status == 'Completed' %}
+                                    पूर्ण
+                                {% elif status == 'Cancelled' %}
+                                    रद्द
+                                {% else %}
+                                    {{ status }}
+                                {% endif %}
+
+                            {% elif current_language == 'hi' %}
+                                {% if status == 'Pending' %}
+                                    लंबित
+                                {% elif status == 'Confirmed' %}
+                                    पुष्टि हो गई
+                                {% elif status == 'Completed' %}
+                                    पूर्ण
+                                {% elif status == 'Cancelled' %}
+                                    रद्द
+                                {% else %}
+                                    {{ status }}
+                                {% endif %}
+
+                            {% else %}
+                                {{ status }}
+                            {% endif %}
+                        </td>
+
+                        <!-- Cancel Appointment -->
+                        <td>
+                            <a href="{{ url_for('cancel_appointment', appointment_id=appointment[0]) }}"
+                               onclick="return confirm('{% if current_language == 'mr' %}तुम्हाला ही अपॉइंटमेंट रद्द करायची आहे का?{% elif current_language == 'hi' %}क्या आप यह अपॉइंटमेंट रद्द करना चाहते हैं?{% else %}Are you sure you want to cancel this appointment?{% endif %}');">
+
+                                <button type="button">
+                                    {% if current_language == 'mr' %}
+                                        रद्द करा
+                                    {% elif current_language == 'hi' %}
+                                        रद्द करें
+                                    {% else %}
+                                        Cancel
+                                    {% endif %}
+                                </button>
+
+                            </a>
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+            </table>
+
+        </div>
 
         {% else %}
 
-        <p>No appointments found.</p>
+            <p>
+                {% if current_language == 'mr' %}
+                    कोणतीही अपॉइंटमेंट आढळली नाही.
+                {% elif current_language == 'hi' %}
+                    कोई अपॉइंटमेंट नहीं मिली।
+                {% else %}
+                    No appointments found.
+                {% endif %}
+            </p>
 
         {% endif %}
 
         <br>
 
-        <a href="/">← Back to Home</a>
+        <a class="back-link" href="{{ url_for('home') }}">
+            {% if current_language == 'mr' %}
+                ← मुख्यपृष्ठावर परत जा
+            {% elif current_language == 'hi' %}
+                ← होम पेज पर वापस जाएँ
+            {% else %}
+                ← Back to Home
+            {% endif %}
+        </a>
 
     </div>
 
-</body>
+    <script>
+        function changeLanguage(language) {
+            window.location.href =
+                "{{ url_for('set_language', language='LANGUAGE_PLACEHOLDER') }}"
+                    .replace("LANGUAGE_PLACEHOLDER", language);
+        }
+    </script>
 
+</body>
 </html>

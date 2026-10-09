@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="{{ current_language }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+        {% if current_language == 'mr' %}
+            लॉगिन - आरोग्य सेवा
+        {% elif current_language == 'hi' %}
+            लॉगिन - स्वास्थ्य सेवा
+        {% else %}
+            Login - Healthcare Appointment System
+        {% endif %}
+    </title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        .language-selector {
+            text-align: right;
+            margin-bottom: 20px;
+        }
+
+        .language-selector label {
+            display: inline;
+            margin-right: 5px;
+        }
+
+        .language-selector select {
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <!-- Language Selector -->
+        <div class="language-selector">
+            <label for="language">
+                🌐 {{ translations['language'] }}
+            </label>
+
+            <select id="language"
+                    onchange="changeLanguage(this.value)">
+
+                <option value="en"
+                    {% if current_language == 'en' %}selected{% endif %}>
+                    English
+                </option>
+
+                <option value="mr"
+                    {% if current_language == 'mr' %}selected{% endif %}>
+                    मराठी
+                </option>
+
+                <option value="hi"
+                    {% if current_language == 'hi' %}selected{% endif %}>
+                    हिन्दी
+                </option>
+
+            </select>
+        </div>
+
+        <!-- Page Heading -->
+        <h1>
+            {% if current_language == 'mr' %}
+                लॉगिन
+            {% elif current_language == 'hi' %}
+                लॉगिन करें
+            {% else %}
+                Login
+            {% endif %}
+        </h1>
+
+        <p>
+            {% if current_language == 'mr' %}
+                पुन्हा स्वागत आहे! पुढे जाण्यासाठी आपली भूमिका निवडा.
+            {% elif current_language == 'hi' %}
+                आपका फिर से स्वागत है! आगे बढ़ने के लिए अपनी भूमिका चुनें।
+            {% else %}
+                Welcome back! Select your role to continue.
+            {% endif %}
+        </p>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="message {{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <!-- Login Form -->
+        <form method="POST" action="{{ url_for('auth.login') }}">
+
+            <label for="email">
+                {% if current_language == 'mr' %}
+                    ईमेल पत्ता
+                {% elif current_language == 'hi' %}
+                    ईमेल पता
+                {% else %}
+                    Email Address
+                {% endif %}
+            </label>
+
+            <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="{% if current_language == 'mr' %}आपला ईमेल टाका{% elif current_language == 'hi' %}अपना ईमेल दर्ज करें{% else %}Enter your email{% endif %}"
+                required
+            >
+
+            <label for="password">
+                {% if current_language == 'mr' %}
+                    पासवर्ड
+                {% elif current_language == 'hi' %}
+                    पासवर्ड
+                {% else %}
+                    Password
+                {% endif %}
+            </label>
+
+            <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="{% if current_language == 'mr' %}आपला पासवर्ड टाका{% elif current_language == 'hi' %}अपना पासवर्ड दर्ज करें{% else %}Enter your password{% endif %}"
+                required
+            >
+
+            <label for="role">
+                {% if current_language == 'mr' %}
+                    भूमिका निवडा
+                {% elif current_language == 'hi' %}
+                    अपनी भूमिका चुनें
+                {% else %}
+                    Login As
+                {% endif %}
+            </label>
+
+            <select id="role" name="role" required>
+
+                <option value="">
+                    {% if current_language == 'mr' %}
+                        -- आपली भूमिका निवडा --
+                    {% elif current_language == 'hi' %}
+                        -- अपनी भूमिका चुनें --
+                    {% else %}
+                        -- Select Your Role --
+                    {% endif %}
+                </option>
+
+                <option value="patient">
+                    {% if current_language == 'mr' %}
+                        रुग्ण
+                    {% elif current_language == 'hi' %}
+                        मरीज
+                    {% else %}
+                        Patient
+                    {% endif %}
+                </option>
+
+                <option value="doctor">
+                    {% if current_language == 'mr' %}
+                        डॉक्टर
+                    {% elif current_language == 'hi' %}
+                        डॉक्टर
+                    {% else %}
+                        Doctor
+                    {% endif %}
+                </option>
+
+                <option value="receptionist">
+                    {% if current_language == 'mr' %}
+                        रिसेप्शनिस्ट
+                    {% elif current_language == 'hi' %}
+                        रिसेप्शनिस्ट
+                    {% else %}
+                        Receptionist
+                    {% endif %}
+                </option>
+
+                <option value="admin">
+                    {% if current_language == 'mr' %}
+                        प्रशासक
+                    {% elif current_language == 'hi' %}
+                        व्यवस्थापक
+                    {% else %}
+                        Admin
+                    {% endif %}
+                </option>
+
+            </select>
+
+            <button type="submit" class="btn">
+                {% if current_language == 'mr' %}
+                    लॉगिन करा
+                {% elif current_language == 'hi' %}
+                    लॉगिन करें
+                {% else %}
+                    Login
+                {% endif %}
+            </button>
+
+        </form>
+
+        <p>
+            {% if current_language == 'mr' %}
+                रुग्ण खाते नाही?
+            {% elif current_language == 'hi' %}
+                मरीज का खाता नहीं है?
+            {% else %}
+                Don't have a patient account?
+            {% endif %}
+
+            <a href="{{ url_for('auth.register') }}">
+                {% if current_language == 'mr' %}
+                    येथे नोंदणी करा
+                {% elif current_language == 'hi' %}
+                    यहाँ पंजीकरण करें
+                {% else %}
+                    Register here
+                {% endif %}
+            </a>
+        </p>
+
+        <p>
+            <a href="{{ url_for('home') }}">
+                {% if current_language == 'mr' %}
+                    मुख्यपृष्ठावर परत जा
+                {% elif current_language == 'hi' %}
+                    मुख्यपृष्ठ पर वापस जाएँ
+                {% else %}
+                    Back to Home
+                {% endif %}
+            </a>
+        </p>
+
+    </div>
+
+    <script>
+        function changeLanguage(language) {
+            window.location.href =
+                "{{ url_for('set_language', language='LANGUAGE_PLACEHOLDER') }}"
+                    .replace("LANGUAGE_PLACEHOLDER", language);
+        }
+    </script>
+
+</body>
+</html>

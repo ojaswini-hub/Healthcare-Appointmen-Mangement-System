@@ -1,46 +1,171 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="{{ session.get('language', 'en') }}">
 <head>
-    <title>Appointment Management System</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>{{ translations['home_title'] if 'home_title' in translations else 'Healthcare Appointment Management System' }}</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f5fa;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .home-container {
+            background: white;
+            width: 90%;
+            max-width: 650px;
+            padding: 40px 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            box-sizing: border-box;
+        }
+
+        .language-selector {
+            text-align: right;
+            margin-bottom: 25px;
+        }
+
+        .language-selector label {
+            font-size: 14px;
+            color: #173b65;
+            margin-right: 5px;
+        }
+
+        .language-selector select {
+            padding: 8px;
+            border: 1px solid #b8c7d9;
+            border-radius: 6px;
+            background: white;
+            font-size: 14px;
+        }
+
+        h1 {
+            color: #173b65;
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+
+        p {
+            color: #555;
+            font-size: 17px;
+            line-height: 1.6;
+        }
+
+        .home-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 30px;
+            align-items: center;
+        }
+
+        .home-buttons a {
+            display: block;
+            width: 220px;
+            padding: 13px 20px;
+            border-radius: 8px;
+            background-color: #1769aa;
+            color: white;
+            text-decoration: none;
+            font-size: 17px;
+            box-sizing: border-box;
+        }
+
+        .home-buttons a:hover {
+            background-color: #104c80;
+        }
+
+        .home-buttons .register-button {
+            background-color: #198754;
+        }
+
+        .home-buttons .register-button:hover {
+            background-color: #12663e;
+        }
+
+        @media (max-width: 480px) {
+            .home-container {
+                padding: 25px 18px;
+            }
+
+            h1 {
+                font-size: 25px;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
-    <header>
-        <h1>Appointment Management System</h1>
-    </header>
+    <div class="home-container">
 
-    <div class="container">
+        <div class="language-selector">
+            <label for="language">🌐
+                {{ translations['language'] }}
+            </label>
 
-        <h2>Welcome!</h2>
+            <select id="language"
+                    onchange="changeLanguage(this.value)">
 
-        <p>Manage your appointments easily and efficiently.</p>
+                <option value="en"
+                    {% if session.get('language', 'en') == 'en' %}selected{% endif %}>
+                    English
+                </option>
 
-        <div class="card-container">
+                <option value="mr"
+                    {% if session.get('language') == 'mr' %}selected{% endif %}>
+                    मराठी
+                </option>
 
-            <div class="card">
-                <h3>📅 Book Appointment</h3>
-                <p>Schedule a new appointment.</p>
-               <a href="/book">
-                 <button>Book Now</button>
-                </a>
-            </div>
+                <option value="hi"
+                    {% if session.get('language') == 'hi' %}selected{% endif %}>
+                    हिन्दी
+                </option>
 
-            <div class="card">
-                <h3>📋 My Appointments</h3>
-                <p>View your upcoming appointments.</p>
-               <a href="/appointments">
-    <button>View Appointments</button>
-</a>
-            </div>
+            </select>
+        </div>
+
+        <h1>{{ translations['home_title'] if 'home_title' in translations else 'Healthcare Appointment Management System' }}</h1>
+
+        <p>
+            {{ translations['welcome'] if 'welcome' in translations else 'Welcome to our Healthcare Appointment Management System.' }}
+        </p>
+
+        <p>
+            {{ translations['description'] if 'description' in translations else 'Book and manage your healthcare appointments conveniently through our online platform.' }}
+        </p>
+
+        <div class="home-buttons">
+
+            <a href="{{ url_for('auth.login') }}">
+                {{ translations['login'] }}
+            </a>
+
+            <a href="{{ url_for('auth.register') }}"
+               class="register-button">
+                {{ translations['register'] }}
+            </a>
 
         </div>
 
     </div>
 
-</body>
+    <script>
+        function changeLanguage(language) {
+            window.location.href = "/set-language/" + language;
+        }
+    </script>
 
+</body>
 </html>

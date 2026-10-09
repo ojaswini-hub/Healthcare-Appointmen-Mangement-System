@@ -1,79 +1,296 @@
 <!DOCTYPE html>
-<html>
+<html lang="{{ current_language }}">
 
 <head>
-    <title>Book Appointment</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+        {% if current_language == 'mr' %}
+            अपॉइंटमेंट बुक करा
+        {% elif current_language == 'hi' %}
+            अपॉइंटमेंट बुक करें
+        {% else %}
+            Book Appointment
+        {% endif %}
+    </title>
 
     <link rel="stylesheet"
           href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        .language-selector {
+            text-align: right;
+            margin: 15px 0;
+        }
+
+        .language-selector select {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .page-header {
+            text-align: center;
+        }
+
+        .success {
+            padding: 10px;
+            border-radius: 5px;
+            background: #e8f5e9;
+            color: #1b5e20;
+        }
+
+        .error {
+            padding: 10px;
+            border-radius: 5px;
+            background: #ffebee;
+            color: #b71c1c;
+        }
+    </style>
 </head>
 
 <body>
 
-    <header>
-        <h1>Book an Appointment</h1>
-    </header>
-
     <div class="container">
+
+        <!-- Language Selector -->
+        <div class="language-selector">
+
+            <label for="language">
+                {% if current_language == 'mr' %}
+                    भाषा निवडा:
+                {% elif current_language == 'hi' %}
+                    भाषा चुनें:
+                {% else %}
+                    Select Language:
+                {% endif %}
+            </label>
+
+            <select id="language" onchange="changeLanguage(this.value)">
+
+                <option value="en"
+                    {% if current_language == 'en' %}selected{% endif %}>
+                    English
+                </option>
+
+                <option value="mr"
+                    {% if current_language == 'mr' %}selected{% endif %}>
+                    मराठी
+                </option>
+
+                <option value="hi"
+                    {% if current_language == 'hi' %}selected{% endif %}>
+                    हिन्दी
+                </option>
+
+            </select>
+        </div>
+
+        <!-- Page Heading -->
+        <header class="page-header">
+            <h1>
+                {% if current_language == 'mr' %}
+                    अपॉइंटमेंट बुक करा
+                {% elif current_language == 'hi' %}
+                    अपॉइंटमेंट बुक करें
+                {% else %}
+                    Book an Appointment
+                {% endif %}
+            </h1>
+        </header>
 
         <div class="card">
 
-    <h2>Appointment Form</h2>
+            <h2>
+                {% if current_language == 'mr' %}
+                    अपॉइंटमेंट फॉर्म
+                {% elif current_language == 'hi' %}
+                    अपॉइंटमेंट फॉर्म
+                {% else %}
+                    Appointment Form
+                {% endif %}
+            </h2>
 
-    {% if success %}
-        <p class="success">{{ success }}</p>
-    {% endif %}
+            <!-- Success Message -->
+            {% if success %}
+                <p class="success">{{ success }}</p>
+            {% endif %}
 
-    {% if error %}
-        <p class="error">{{ error }}</p>
-    {% endif %}
+            <!-- Error Message -->
+            {% if error %}
+                <p class="error">{{ error }}</p>
+            {% endif %}
 
-    <form method="POST" action="/book">
+            <!-- Appointment Form -->
+            <form method="POST" action="{{ url_for('book') }}">
 
-                <label>Patient Name</label>
+                <!-- Patient Name -->
+                <label for="patient_name">
+                    {% if current_language == 'mr' %}
+                        रुग्णाचे नाव
+                    {% elif current_language == 'hi' %}
+                        मरीज का नाम
+                    {% else %}
+                        Patient Name
+                    {% endif %}
+                </label>
+
                 <br>
-                <input type="text" name="patient_name" placeholder="Enter your name" required>
+
+                <input
+                    type="text"
+                    id="patient_name"
+                    name="patient_name"
+                    placeholder="{% if current_language == 'mr' %}तुमचे नाव टाका{% elif current_language == 'hi' %}अपना नाम दर्ज करें{% else %}Enter your name{% endif %}"
+                    required
+                >
+
                 <br><br>
 
-                <label>Email</label>
+                <!-- Email -->
+                <label for="email">
+                    {% if current_language == 'mr' %}
+                        ईमेल पत्ता
+                    {% elif current_language == 'hi' %}
+                        ईमेल पता
+                    {% else %}
+                        Email
+                    {% endif %}
+                </label>
+
                 <br>
-                <input type="email" name="email" placeholder="Enter your email" required>
+
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="{% if current_language == 'mr' %}तुमचा ईमेल टाका{% elif current_language == 'hi' %}अपना ईमेल दर्ज करें{% else %}Enter your email{% endif %}"
+                    required
+                >
+
                 <br><br>
 
-                <label>Doctor</label>
+                <!-- Doctor Selection -->
+                <label for="doctor">
+                    {% if current_language == 'mr' %}
+                        डॉक्टर निवडा
+                    {% elif current_language == 'hi' %}
+                        डॉक्टर चुनें
+                    {% else %}
+                        Doctor
+                    {% endif %}
+                </label>
+
                 <br>
-                <select name="doctor" required>
-                    <option>Select Doctor</option>
-                    <option>Dr. Sharma</option>
-                    <option>Dr. Patel</option>
-                    <option>Dr. Mehta</option>
+
+                <select id="doctor" name="doctor" required>
+
+                    <option value="">
+                        {% if current_language == 'mr' %}
+                            डॉक्टर निवडा
+                        {% elif current_language == 'hi' %}
+                            डॉक्टर चुनें
+                        {% else %}
+                            Select Doctor
+                        {% endif %}
+                    </option>
+
+                    {% for doctor in doctors %}
+                        {% if doctor['available'] %}
+                            <option value="{{ doctor['full_name'] }}">
+                                {{ doctor['full_name'] }} -
+                                {{ doctor['specialization'] }}
+                            </option>
+                        {% endif %}
+                    {% endfor %}
+
                 </select>
+
                 <br><br>
 
-                <label>Date</label>
+                <!-- Date -->
+                <label for="date">
+                    {% if current_language == 'mr' %}
+                        तारीख
+                    {% elif current_language == 'hi' %}
+                        तारीख
+                    {% else %}
+                        Date
+                    {% endif %}
+                </label>
+
                 <br>
-                <input type="date" name="date" required>
+
+                <input
+                    type="date"
+                    id="date"
+                    name="date"
+                    required
+                >
+
                 <br><br>
 
-                <label>Time</label>
+                <!-- Time -->
+                <label for="time">
+                    {% if current_language == 'mr' %}
+                        वेळ
+                    {% elif current_language == 'hi' %}
+                        समय
+                    {% else %}
+                        Time
+                    {% endif %}
+                </label>
+
                 <br>
-                <input type="time" name="time" required>
+
+                <input
+                    type="time"
+                    id="time"
+                    name="time"
+                    required
+                >
+
                 <br><br>
 
+                <!-- Submit Button -->
                 <button type="submit">
-                    Book Appointment
+                    {% if current_language == 'mr' %}
+                        अपॉइंटमेंट बुक करा
+                    {% elif current_language == 'hi' %}
+                        अपॉइंटमेंट बुक करें
+                    {% else %}
+                        Book Appointment
+                    {% endif %}
                 </button>
 
             </form>
 
             <br>
 
-            <a href="/">← Back to Home</a>
+            <!-- Back to Home -->
+            <a href="{{ url_for('home') }}">
+                {% if current_language == 'mr' %}
+                    ← मुख्यपृष्ठावर परत जा
+                {% elif current_language == 'hi' %}
+                    ← होम पेज पर वापस जाएँ
+                {% else %}
+                    ← Back to Home
+                {% endif %}
+            </a>
 
         </div>
 
     </div>
 
-</body>
+    <script>
+        function changeLanguage(language) {
+            window.location.href =
+                "{{ url_for('set_language', language='LANGUAGE_PLACEHOLDER') }}"
+                    .replace("LANGUAGE_PLACEHOLDER", language);
+        }
+    </script>
 
+</body>
 </html>

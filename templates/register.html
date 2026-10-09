@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="{{ current_language }}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+        {% if current_language == 'mr' %}
+            रुग्ण नोंदणी
+        {% elif current_language == 'hi' %}
+            मरीज पंजीकरण
+        {% else %}
+            Patient Registration | Healthcare Appointment System
+        {% endif %}
+    </title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        .auth-container {
+            max-width: 450px;
+            margin: 40px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .auth-container h1 {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .auth-container p {
+            text-align: center;
+            color: #666;
+        }
+
+        .auth-container label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        .auth-container input {
+            width: 100%;
+            padding: 11px;
+            margin-top: 6px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+
+        .auth-container button {
+            width: 100%;
+            margin-top: 22px;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            background: #087f8c;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .auth-container button:hover {
+            background: #066873;
+        }
+
+        .auth-link {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .message {
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            background: #e8f5e9;
+            color: #1b5e20;
+        }
+
+        .language-selector {
+            text-align: right;
+            margin-bottom: 20px;
+        }
+
+        .language-selector select {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="auth-container">
+
+        <!-- Language Selector -->
+        <div class="language-selector">
+            <label for="language">
+                {% if current_language == 'mr' %}
+                    भाषा निवडा:
+                {% elif current_language == 'hi' %}
+                    भाषा चुनें:
+                {% else %}
+                    Select Language:
+                {% endif %}
+            </label>
+
+            <select id="language" onchange="changeLanguage(this.value)">
+                <option value="en" {% if current_language == 'en' %}selected{% endif %}>
+                    English
+                </option>
+
+                <option value="mr" {% if current_language == 'mr' %}selected{% endif %}>
+                    मराठी
+                </option>
+
+                <option value="hi" {% if current_language == 'hi' %}selected{% endif %}>
+                    हिन्दी
+                </option>
+            </select>
+        </div>
+
+        <!-- Registration Heading -->
+        <h1>
+            {% if current_language == 'mr' %}
+                रुग्ण नोंदणी
+            {% elif current_language == 'hi' %}
+                मरीज पंजीकरण
+            {% else %}
+                Patient Registration
+            {% endif %}
+        </h1>
+
+        <p>
+            {% if current_language == 'mr' %}
+                तुमचे आरोग्य खाते तयार करा
+            {% elif current_language == 'hi' %}
+                अपना स्वास्थ्य खाता बनाएँ
+            {% else %}
+                Create your healthcare account
+            {% endif %}
+        </p>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, message in messages %}
+                <div class="message">{{ message }}</div>
+            {% endfor %}
+        {% endwith %}
+
+        <!-- Registration Form -->
+        <form method="POST" action="{{ url_for('auth.register') }}">
+
+            <label for="full_name">
+                {% if current_language == 'mr' %}
+                    पूर्ण नाव
+                {% elif current_language == 'hi' %}
+                    पूरा नाम
+                {% else %}
+                    Full Name
+                {% endif %}
+            </label>
+
+            <input
+                type="text"
+                id="full_name"
+                name="full_name"
+                placeholder="{% if current_language == 'mr' %}तुमचे पूर्ण नाव टाका{% elif current_language == 'hi' %}अपना पूरा नाम दर्ज करें{% else %}Enter your full name{% endif %}"
+                autocomplete="name"
+                required
+            >
+
+            <label for="email">
+                {% if current_language == 'mr' %}
+                    ईमेल पत्ता
+                {% elif current_language == 'hi' %}
+                    ईमेल पता
+                {% else %}
+                    Email Address
+                {% endif %}
+            </label>
+
+            <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="{% if current_language == 'mr' %}तुमचा ईमेल पत्ता टाका{% elif current_language == 'hi' %}अपना ईमेल पता दर्ज करें{% else %}Enter your email address{% endif %}"
+                autocomplete="email"
+                required
+            >
+
+            <label for="phone">
+                {% if current_language == 'mr' %}
+                    फोन नंबर
+                {% elif current_language == 'hi' %}
+                    फोन नंबर
+                {% else %}
+                    Phone Number
+                {% endif %}
+            </label>
+
+            <input
+                type="tel"
+                id="phone"
+                name="phone"
+                placeholder="{% if current_language == 'mr' %}तुमचा फोन नंबर टाका{% elif current_language == 'hi' %}अपना फोन नंबर दर्ज करें{% else %}Enter your phone number{% endif %}"
+                autocomplete="tel"
+                required
+            >
+
+            <label for="password">
+                {% if current_language == 'mr' %}
+                    पासवर्ड
+                {% elif current_language == 'hi' %}
+                    पासवर्ड
+                {% else %}
+                    Password
+                {% endif %}
+            </label>
+
+            <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="{% if current_language == 'mr' %}पासवर्ड तयार करा{% elif current_language == 'hi' %}पासवर्ड बनाएँ{% else %}Create a password{% endif %}"
+                minlength="8"
+                autocomplete="new-password"
+                required
+            >
+
+            <label for="confirm_password">
+                {% if current_language == 'mr' %}
+                    पासवर्डची पुष्टी करा
+                {% elif current_language == 'hi' %}
+                    पासवर्ड की पुष्टि करें
+                {% else %}
+                    Confirm Password
+                {% endif %}
+            </label>
+
+            <input
+                type="password"
+                id="confirm_password"
+                name="confirm_password"
+                placeholder="{% if current_language == 'mr' %}पासवर्ड पुन्हा टाका{% elif current_language == 'hi' %}पासवर्ड दोबारा दर्ज करें{% else %}Enter your password again{% endif %}"
+                minlength="8"
+                autocomplete="new-password"
+                required
+            >
+
+            <button type="submit">
+                {% if current_language == 'mr' %}
+                    खाते तयार करा
+                {% elif current_language == 'hi' %}
+                    खाता बनाएँ
+                {% else %}
+                    Create Account
+                {% endif %}
+            </button>
+
+        </form>
+
+        <!-- Login Link -->
+        <div class="auth-link">
+            <p>
+                {% if current_language == 'mr' %}
+                    आधीच नोंदणी केली आहे?
+                {% elif current_language == 'hi' %}
+                    क्या आपने पहले से पंजीकरण किया है?
+                {% else %}
+                    Already registered?
+                {% endif %}
+
+                <a href="{{ url_for('auth.login') }}">
+                    {% if current_language == 'mr' %}
+                        येथे लॉग इन करा
+                    {% elif current_language == 'hi' %}
+                        यहाँ लॉग इन करें
+                    {% else %}
+                        Log in here
+                    {% endif %}
+                </a>
+            </p>
+        </div>
+
+    </div>
+
+    <script>
+        function changeLanguage(language) {
+            window.location.href =
+                "{{ url_for('set_language', language='LANGUAGE_PLACEHOLDER') }}"
+                    .replace("LANGUAGE_PLACEHOLDER", language);
+        }
+    </script>
+
+</body>
+</html>

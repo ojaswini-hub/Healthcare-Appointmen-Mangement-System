@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Doctor Appointments</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>My Appointments</h1>
+
+        <p>Welcome, Dr. {{ session.get('user_name', 'Doctor') }}.</p>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="message {{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% if appointments %}
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Appointment ID</th>
+                        <th>Patient Name</th>
+                        <th>Patient Email</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Status</th>
+                        <th>Update Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for appointment in appointments %}
+                        <tr>
+                            <td>{{ appointment['id'] }}</td>
+                            <td>{{ appointment['patient_name'] }}</td>
+                            <td>{{ appointment['email'] }}</td>
+                            <td>{{ appointment['date'] }}</td>
+                            <td>{{ appointment['time'] }}</td>
+
+                            <td>
+                                {{ appointment['status'] or 'Pending' }}
+                            </td>
+
+                            <td>
+                                <form
+                                    method="POST"
+                                    action="{{ url_for(
+                                        'doctor.update_appointment_status',
+                                        appointment_id=appointment['id']
+                                    ) }}"
+                                >
+                                    <select name="status" required>
+                                        <option value="">Select Status</option>
+                                        <option value="Confirmed">Confirmed</option>
+                                        <option value="Completed">Completed</option>
+                                    </select>
+
+                                    <button type="submit" class="btn">
+                                        Update
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+        {% else %}
+
+            <p>No appointments have been assigned to you yet.</p>
+
+        {% endif %}
+
+        <div class="dashboard-options">
+
+            <a href="{{ url_for('doctor.dashboard') }}" class="btn">
+                Back to Dashboard
+            </a>
+
+            <a href="{{ url_for('auth.logout') }}" class="btn">
+                Logout
+            </a>
+
+        </div>
+
+    </div>
+
+</body>
+</html>

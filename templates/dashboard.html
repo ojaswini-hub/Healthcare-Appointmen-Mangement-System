@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="{{ current_language }}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+        {% if current_language == 'mr' %}
+            डॅशबोर्ड
+        {% elif current_language == 'hi' %}
+            डैशबोर्ड
+        {% else %}
+            Dashboard | Healthcare Appointment System
+        {% endif %}
+    </title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        .dashboard-container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 25px;
+        }
+
+        .welcome-card {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .welcome-card h1 {
+            color: #087f8c;
+        }
+
+        .role-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            background: #e0f2f1;
+            color: #00695c;
+            border-radius: 20px;
+            text-transform: capitalize;
+        }
+
+        .dashboard-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 25px;
+        }
+
+        .dashboard-card {
+            padding: 22px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            text-align: center;
+        }
+
+        .dashboard-card h3 {
+            color: #087f8c;
+        }
+
+        .dashboard-card a {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 10px 16px;
+            background: #087f8c;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        .dashboard-card a:hover {
+            background: #066873;
+        }
+
+        .logout-button {
+            display: inline-block;
+            margin-top: 25px;
+            padding: 11px 20px;
+            background: #c62828;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        .logout-button:hover {
+            background: #a51f1f;
+        }
+
+        .language-selector {
+            text-align: right;
+            margin-bottom: 20px;
+        }
+
+        .language-selector select {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="dashboard-container">
+
+    <!-- Language Selector -->
+    <div class="language-selector">
+
+        <label for="language">
+            {% if current_language == 'mr' %}
+                भाषा निवडा:
+            {% elif current_language == 'hi' %}
+                भाषा चुनें:
+            {% else %}
+                Select Language:
+            {% endif %}
+        </label>
+
+        <select id="language" onchange="changeLanguage(this.value)">
+
+            <option value="en"
+                {% if current_language == 'en' %}selected{% endif %}>
+                English
+            </option>
+
+            <option value="mr"
+                {% if current_language == 'mr' %}selected{% endif %}>
+                मराठी
+            </option>
+
+            <option value="hi"
+                {% if current_language == 'hi' %}selected{% endif %}>
+                हिन्दी
+            </option>
+
+        </select>
+    </div>
+
+    <!-- Welcome Card -->
+    <div class="welcome-card">
+
+        <h1>
+            {% if current_language == 'mr' %}
+                स्वागत आहे, {{ session.get('user_name', 'वापरकर्ता') }}!
+            {% elif current_language == 'hi' %}
+                स्वागत है, {{ session.get('user_name', 'उपयोगकर्ता') }}!
+            {% else %}
+                Welcome, {{ session.get('user_name', 'User') }}!
+            {% endif %}
+        </h1>
+
+        <p>
+            {% if current_language == 'mr' %}
+                तुम्ही आरोग्य सेवा अपॉइंटमेंट व्यवस्थापन प्रणालीमध्ये लॉग इन केले आहे.
+            {% elif current_language == 'hi' %}
+                आपने स्वास्थ्य अपॉइंटमेंट प्रबंधन प्रणाली में लॉग इन किया है।
+            {% else %}
+                You are logged in to the Healthcare Appointment Management System.
+            {% endif %}
+        </p>
+
+        <p>
+            {% if current_language == 'mr' %}
+                तुमची भूमिका:
+            {% elif current_language == 'hi' %}
+                आपकी भूमिका:
+            {% else %}
+                Your role:
+            {% endif %}
+
+            <span class="role-badge">
+                {% set role = session.get('role', 'User') %}
+
+                {% if current_language == 'mr' %}
+                    {% if role == 'patient' %}रुग्ण
+                    {% elif role == 'doctor' %}डॉक्टर
+                    {% elif role == 'receptionist' %}रिसेप्शनिस्ट
+                    {% elif role == 'admin' %}प्रशासक
+                    {% else %}वापरकर्ता{% endif %}
+
+                {% elif current_language == 'hi' %}
+                    {% if role == 'patient' %}मरीज
+                    {% elif role == 'doctor' %}डॉक्टर
+                    {% elif role == 'receptionist' %}रिसेप्शनिस्ट
+                    {% elif role == 'admin' %}प्रशासक
+                    {% else %}उपयोगकर्ता{% endif %}
+
+                {% else %}
+                    {{ role|capitalize }}
+                {% endif %}
+            </span>
+        </p>
+
+        <p>
+            {% if current_language == 'mr' %}
+                ईमेल:
+            {% elif current_language == 'hi' %}
+                ईमेल:
+            {% else %}
+                Email:
+            {% endif %}
+
+            {{ session.get('user_email', '') }}
+        </p>
+
+    </div>
+
+    <!-- Dashboard Cards -->
+    <div class="dashboard-links">
+
+        {% if session.get('role') == 'patient' %}
+
+            <!-- Patient: Book Appointment -->
+            <div class="dashboard-card">
+
+                <h3>
+                    {% if current_language == 'mr' %}
+                        अपॉइंटमेंट बुक करा
+                    {% elif current_language == 'hi' %}
+                        अपॉइंटमेंट बुक करें
+                    {% else %}
+                        Book Appointment
+                    {% endif %}
+                </h3>
+
+                <p>
+                    {% if current_language == 'mr' %}
+                        डॉक्टरांना भेटण्यासाठी वेळ ठरवा.
+                    {% elif current_language == 'hi' %}
+                        डॉक्टर से मिलने का समय तय करें।
+                    {% else %}
+                        Schedule a visit with a doctor.
+                    {% endif %}
+                </p>
+
+                <a href="{{ url_for('book') }}">
+                    {% if current_language == 'mr' %}
+                        आता बुक करा
+                    {% elif current_language == 'hi' %}
+                        अभी बुक करें
+                    {% else %}
+                        Book Now
+                    {% endif %}
+                </a>
+
+            </div>
+
+            <!-- Patient: My Appointments -->
+            <div class="dashboard-card">
+
+                <h3>
+                    {% if current_language == 'mr' %}
+                        माझ्या अपॉइंटमेंट्स
+                    {% elif current_language == 'hi' %}
+                        मेरी अपॉइंटमेंट्स
+                    {% else %}
+                        My Appointments
+                    {% endif %}
+                </h3>
+
+                <p>
+                    {% if current_language == 'mr' %}
+                        तुमच्या अपॉइंटमेंटची माहिती पहा.
+                    {% elif current_language == 'hi' %}
+                        अपनी अपॉइंटमेंट की जानकारी देखें।
+                    {% else %}
+                        View your appointment details.
+                    {% endif %}
+                </p>
+
+                <a href="{{ url_for('appointments') }}">
+                    {% if current_language == 'mr' %}
+                        अपॉइंटमेंट्स पहा
+                    {% elif current_language == 'hi' %}
+                        अपॉइंटमेंट्स देखें
+                    {% else %}
+                        View Appointments
+                    {% endif %}
+                </a>
+
+            </div>
+
+        {% elif session.get('role') == 'doctor' %}
+
+            <div class="dashboard-card">
+
+                <h3>
+                    {% if current_language == 'mr' %}
+                        डॉक्टर विभाग
+                    {% elif current_language == 'hi' %}
+                        डॉक्टर विभाग
+                    {% else %}
+                        Doctor Module
+                    {% endif %}
+                </h3>
+
+                <p>
+                    {% if current_language == 'mr' %}
+                        तुमच्या रुग्णांच्या अपॉइंटमेंट्स व्यवस्थापित करा.
+                    {% elif current_language == 'hi' %}
+                        अपने मरीजों की अपॉइंटमेंट्स प्रबंधित करें।
+                    {% else %}
+                        Manage your patient appointments.
+                    {% endif %}
+                </p>
+
+                <a href="{{ url_for('doctor.doctor_dashboard') }}">
+                    {% if current_language == 'mr' %}
+                        डॅशबोर्ड उघडा
+                    {% elif current_language == 'hi' %}
+                        डैशबोर्ड खोलें
+                    {% else %}
+                        Open Dashboard
+                    {% endif %}
+                </a>
+
+            </div>
+
+        {% elif session.get('role') == 'receptionist' %}
+
+            <div class="dashboard-card">
+
+                <h3>
+                    {% if current_language == 'mr' %}
+                        रिसेप्शनिस्ट विभाग
+                    {% elif current_language == 'hi' %}
+                        रिसेप्शनिस्ट विभाग
+                    {% else %}
+                        Receptionist Module
+                    {% endif %}
+                </h3>
+
+                <p>
+                    {% if current_language == 'mr' %}
+                        रुग्णांना अपॉइंटमेंट घेण्यास मदत करा.
+                    {% elif current_language == 'hi' %}
+                        मरीजों को अपॉइंटमेंट लेने में सहायता करें।
+                    {% else %}
+                        Assist patients with their appointments.
+                    {% endif %}
+                </p>
+
+                <a href="#">
+                    {% if current_language == 'mr' %}
+                        लवकरच उपलब्ध
+                    {% elif current_language == 'hi' %}
+                        जल्द उपलब्ध होगा
+                    {% else %}
+                        Coming Soon
+                    {% endif %}
+                </a>
+
+            </div>
+
+        {% elif session.get('role') == 'admin' %}
+
+            <div class="dashboard-card">
+
+                <h3>
+                    {% if current_language == 'mr' %}
+                        प्रशासक विभाग
+                    {% elif current_language == 'hi' %}
+                        एडमिन विभाग
+                    {% else %}
+                        Admin Module
+                    {% endif %}
+                </h3>
+
+                <p>
+                    {% if current_language == 'mr' %}
+                        प्रणालीतील खाती आणि सेटिंग्ज व्यवस्थापित करा.
+                    {% elif current_language == 'hi' %}
+                        सिस्टम के खाते और सेटिंग्स प्रबंधित करें।
+                    {% else %}
+                        Manage system accounts and settings.
+                    {% endif %}
+                </p>
+
+                <a href="#">
+                    {% if current_language == 'mr' %}
+                        लवकरच उपलब्ध
+                    {% elif current_language == 'hi' %}
+                        जल्द उपलब्ध होगा
+                    {% else %}
+                        Coming Soon
+                    {% endif %}
+                </a>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+    <!-- Logout -->
+    <div style="text-align: center;">
+
+        <a href="{{ url_for('auth.logout') }}" class="logout-button">
+
+            {% if current_language == 'mr' %}
+                लॉग आउट
+            {% elif current_language == 'hi' %}
+                लॉग आउट
+            {% else %}
+                Logout
+            {% endif %}
+
+        </a>
+
+    </div>
+
+</div>
+
+<script>
+    function changeLanguage(language) {
+        window.location.href =
+            "{{ url_for('set_language', language='LANGUAGE_PLACEHOLDER') }}"
+                .replace("LANGUAGE_PLACEHOLDER", language);
+    }
+</script>
+
+</body>
+</html>
