@@ -1,5 +1,6 @@
 from werkzeug.security import generate_password_hash
 from flask import session
+from database.db import create_tables
 from flask import Flask, render_template, request, redirect, url_for, session
 from translations import TRANSLATIONS
 import os
@@ -424,12 +425,17 @@ def cancel_appointment(appointment_id):
 def page_not_found(error):
     return "Page not found. Please check the URL.", 404
 
+# ------------------------------------------
+# INITIALIZE DATABASE
+# ------------------------------------------
+
+create_database()
+create_tables()
+
 
 # ------------------------------------------
 # START APPLICATION
 # ------------------------------------------
 
 if __name__ == "__main__":
-    create_database()
-    create_tables()
     app.run(debug=True)
